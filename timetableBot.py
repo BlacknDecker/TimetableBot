@@ -3,10 +3,6 @@ import json
 from telegram import (ReplyKeyboardMarkup)
 from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters, RegexHandler, ConversationHandler)
 import telegram
-import logging
-import pprint
-import xml.etree.ElementTree as ET
-import requests
 import time,datetime
 
 
@@ -23,7 +19,6 @@ updater= Updater(token=connection_data["token"])
 dispatcher= updater.dispatcher
 SELECT,CHOOSE = range(2)
 
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s: %(message)s', level=logging.INFO, datefmt='%d/%m/%y - %H:%M:%S')
 
 ###MATERIE#########################
 QAS = '*Quantitative Analysis of Systems*'
@@ -92,13 +87,11 @@ def getTimetable(oggi, richiesta):
 #####FUNZIONI BOT#############################
 def start(bot, update):
 	user = update.message.from_user
-	logging.info('Bot Started!')
 	update.message.reply_text('Bot started!')
 
 
 #>> Comando Orario
 def orari(bot, update):
-	logging.info('Conversazione Iniziata!')
 	#Creo una tastiera personalizzata:
 	reply_keyboard = [['Oggi\nToday','Domani\nTomorrow'],['Select...']]
 	update.message.reply_text('Select day:',	reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
@@ -108,7 +101,6 @@ def orari(bot, update):
 
 
 def switchMod(bot,update):
-	logging.info('Modalita scelta:!')
 	if update.message.text == 'Select...' :
 		return chooseDay(update)	#chiedo di selezionare il giorno
 	else:
@@ -116,15 +108,13 @@ def switchMod(bot,update):
 
 
 def chooseDay(update):
-	logging.info('Modalita a scelta')
 	#Creo una tastiera personalizzata:
 	reply_keyboard = [[mon,tue],[wed,thu],[fri]]
-	update.message.reply_text('Select the day:',	reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+	update.message.reply_text('Select the day:', reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
 	#return il codice dello stato successivo
 	return CHOOSE
 
 def daychoosed(bot,update):
-	logging.info('Giorno scelto!')
 	request = setupDayCode(update.message.text)
 	text= getTimetable(0,request)
 	reply_markup= telegram.ReplyKeyboardRemove()
@@ -133,7 +123,6 @@ def daychoosed(bot,update):
 
 
 def day(bot, update):
-	logging.info('Modalita automatica')
 	now= datetime.datetime.now()
 	today= now.strftime('%w')
 	request= getDayCode(update.message.text)
@@ -144,12 +133,10 @@ def day(bot, update):
 #<<
 
 def error(bot, update, error):
-	logging.warning('Update "%s" caused error "%s"' % (update, error))
 
 
 def cancel(bot,update):
 	user = update.message.from_user
-	logging.info("%s aborted the request" % (user.first_name))
 	reply_markup= telegram.ReplyKeyboardRemove()
 	update.message.reply_text('Command aborted!',reply_markup= reply_markup)
 	return ConversationHandler.END
@@ -157,7 +144,6 @@ def cancel(bot,update):
 
 def unknown(bot, update):
 	user = update.message.from_user
-	logging.info("%s send an unknown command" % (user.first_name))
 	update.message.reply_text('Unknown command!\nPress /timetable to start!')
 
 
@@ -185,6 +171,5 @@ dispatcher.add_handler(timetable_handler)
 dispatcher.add_error_handler(error)
 dispatcher.add_handler(unknown_handler)
 
-#Start the BOT:
-logging.info('Bot Avviato!')
+#Start the BOT
 updater.start_polling()
