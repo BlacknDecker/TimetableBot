@@ -6,6 +6,16 @@ __pycache__/
 # C extensions
 *.so
 
+# IDE
+.idea/
+
+# Local Directories
+#
+#
+
+# Private Info
+bot_info.json
+
 # Distribution / packaging
 .Python
 build/
