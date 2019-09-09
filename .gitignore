@@ -15,6 +15,7 @@ __pycache__/
 
 # Private Info
 bot_info.json
+timetable.json
 
 # Distribution / packaging
 .Python
