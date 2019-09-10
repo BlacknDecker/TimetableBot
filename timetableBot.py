@@ -100,7 +100,7 @@ def getLecturesByDay(day_code):
 #####FUNZIONI BOT#############################
 def start(bot, update):
     user = update.message.from_user
-    update.message.reply_text('Bot started!')
+    update.message.reply_text("Welcome!\n Press '/' to show the available commands!")
 
 
 # >> Custom Commands
@@ -148,7 +148,23 @@ def day(bot, update):
     update.message.reply_text(text, parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=reply_markup)
     return ConversationHandler.END
 
+
+# AC (Acronym command)
+def showAcronyms(bot, update):
+    user = update.message.from_user
+    # Collect acronyms
+    raw_infos = getRawTimetable()
+    courses = raw_infos["courses"]
+    acronyms = []
+    for course in courses:
+        acronyms.append("*{}* - {}\n".format(course["acronym"], course["name"]))
+    acronyms.sort()
+    text = "Courses Acronyms:\n{}".format("".join(acronyms))
+    reply_markup = telegram.ReplyKeyboardRemove()
+    update.message.reply_text(text, reply_markup=reply_markup)
+
 # <<
+
 
 def error(bot, update, error):
     pass
@@ -180,11 +196,14 @@ timetable_handler = ConversationHandler(
     fallbacks=[CommandHandler('cancel', cancel)]
 )
 
+acronyms_handler = CommandHandler('showAcronyms', showAcronyms)
+
 unknown_handler = MessageHandler(Filters.command, unknown)
 
 # Aggiungo gli Handler al dispatcher
 dispatcher.add_handler(start_handler)
 dispatcher.add_handler(timetable_handler)
+dispatcher.add_handler(acronyms_handler)
 dispatcher.add_error_handler(error)
 dispatcher.add_handler(unknown_handler)
 
