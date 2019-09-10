@@ -157,11 +157,13 @@ def showAcronyms(bot, update):
     courses = raw_infos["courses"]
     acronyms = []
     for course in courses:
-        acronyms.append("*{}* - {}\n".format(course["acronym"], course["name"]))
+        acr = "*{}*".center(6, ' ').format(course["acronym"])
+        acr += " - {}\n".format(course["name"])
+        acronyms.append(acr)
     acronyms.sort()
     text = "Courses Acronyms:\n{}".format("".join(acronyms))
     reply_markup = telegram.ReplyKeyboardRemove()
-    update.message.reply_text(text, reply_markup=reply_markup)
+    update.message.reply_text(text, parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=reply_markup)
 
 # <<
 
