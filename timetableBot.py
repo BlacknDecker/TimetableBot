@@ -196,7 +196,7 @@ timetable_handler = ConversationHandler(
     fallbacks=[CommandHandler('cancel', cancel)]
 )
 
-acronyms_handler = CommandHandler('showAcronyms', showAcronyms)
+acronyms_handler = CommandHandler('acronyms', showAcronyms)
 
 unknown_handler = MessageHandler(Filters.command, unknown)
 
